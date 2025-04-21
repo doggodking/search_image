@@ -7,18 +7,40 @@ import 'package:image_search_app/presentation/search_image/search_home_screen.da
 final appRouter = GoRouter(
   initialLocation: Routes.home,
   routes: [
-    GoRoute(
-      path: Routes.home, // '/search_home'
-      builder: (context, state) => SearchHomeScreen(viewModel: getIt()),
-      routes: [
-        GoRoute(
-          path: Routes.detail, //
-          builder: (context, state) {
-            final imageUrl = state.extra as String;
-            return ImageDetailScreen(imageUrl: imageUrl);
-          },
+    StatefulShellRoute.indexedStack(
+      builder: (
+        context,
+        GoRouterState state,
+        StatefulNavigationShell navigationShell,
+      ) {
+        return navigationShell;
+      },
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routes.home, //
+              builder:
+                  (context, state) => SearchHomeScreen(
+                    viewModel: getIt(),
+                    onTabImage: (image) {
+                      context.push(
+                        Routes.detailPath(),
+                        extra: image.largeImageURL,
+                      );
+                    },
+                  ),
+            ),
+          ],
         ),
       ],
+    ),
+    GoRoute(
+      path: Routes.detailPath(), //
+      builder: (context, state) {
+        final imageUrl = state.extra as String;
+        return ImageDetailScreen(imageUrl: imageUrl);
+      },
     ),
   ],
 );

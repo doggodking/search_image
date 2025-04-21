@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_search_app/core/error/ui_state.dart';
-import 'package:image_search_app/core/routing/routes.dart';
+import 'package:image_search_app/domain/model/image_model.dart';
 import 'package:image_search_app/presentation/component/app_image.dart';
 import 'package:image_search_app/presentation/component/input_field.dart';
 import 'package:image_search_app/presentation/component/skelton_animtion_widget.dart';
@@ -9,8 +8,13 @@ import 'package:image_search_app/presentation/search_image/search_image_view_mod
 
 class SearchHomeScreen extends StatefulWidget {
   final SearchImageViewModel viewModel;
+  final Function(ImageModel image) onTabImage;
 
-  const SearchHomeScreen({super.key, required this.viewModel});
+  const SearchHomeScreen({
+    super.key,
+    required this.viewModel,
+    required this.onTabImage,
+  });
 
   @override
   State<SearchHomeScreen> createState() => _SearchHomeScreenState();
@@ -78,11 +82,7 @@ class _SearchHomeScreenState extends State<SearchHomeScreen> {
                         final image = images[index];
 
                         return GestureDetector(
-                          onTap:
-                              () => context.push(
-                                Routes.detailPath(),
-                                extra: image.largeImageURL,
-                              ),
+                          onTap: () => widget.onTabImage(image),
                           child: AppImage(
                             path: image.previewURL,
                             borderRadius: BorderRadius.circular(15),
